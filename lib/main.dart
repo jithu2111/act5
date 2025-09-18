@@ -31,6 +31,22 @@ class DigitalPetAppState extends State<DigitalPetApp> {
     super.dispose();
   }
 
+  void _updateHappiness() {
+    if (hungerLevel < 30) {
+      happinessLevel = (happinessLevel - 20).clamp(0, 100);
+    } else {
+      happinessLevel = (happinessLevel + 10).clamp(0, 100);
+    }
+  }
+
+  void _updateHunger() {
+    hungerLevel = (hungerLevel + 5).clamp(0, 100);
+    if (hungerLevel > 100) {
+      hungerLevel = 100;
+      happinessLevel = (happinessLevel - 20).clamp(0, 100);
+    }
+  }
+
   Color _getPetColor() {
     if (happinessLevel > 70) return Colors.green;
     if (happinessLevel >= 30) return Colors.yellow;
