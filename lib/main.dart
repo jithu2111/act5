@@ -20,6 +20,8 @@ class DigitalPetApp extends StatefulWidget {
 class DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "Your Pet";
   int happinessLevel = 50;
+  int hungerLevel = 50;
+  int energyLevel = 50;
   bool isEditingName = false;
   TextEditingController nameController = TextEditingController();
 
@@ -27,6 +29,22 @@ class DigitalPetAppState extends State<DigitalPetApp> {
   void dispose() {
     nameController.dispose();
     super.dispose();
+  }
+
+  void _updateHappiness() {
+    if (hungerLevel < 30) {
+      happinessLevel = (happinessLevel - 20).clamp(0, 100);
+    } else {
+      happinessLevel = (happinessLevel + 10).clamp(0, 100);
+    }
+  }
+
+  void _updateHunger() {
+    hungerLevel = (hungerLevel + 5).clamp(0, 100);
+    if (hungerLevel > 100) {
+      hungerLevel = 100;
+      happinessLevel = (happinessLevel - 20).clamp(0, 100);
+    }
   }
 
   Color _getPetColor() {
@@ -59,6 +77,32 @@ class DigitalPetAppState extends State<DigitalPetApp> {
         isEditingName = true;
       }
     });
+  }
+
+  Widget _buildStatBar(String label, int value, Color color) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$label: $value/100',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        SizedBox(height: 5),
+        Container(
+          width: double.infinity,
+          height: 20,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: LinearProgressIndicator(
+            value: value / 100,
+            backgroundColor: Colors.grey[300],
+            valueColor: AlwaysStoppedAnimation<Color>(color),
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -160,6 +204,15 @@ class DigitalPetAppState extends State<DigitalPetApp> {
               'Mood: ${_getMoodText()}',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
             ),
+
+            SizedBox(height: 20.0),
+
+            // Stat Bars
+            _buildStatBar('Happiness', happinessLevel, Colors.pink),
+            SizedBox(height: 10),
+            _buildStatBar('Hunger', hungerLevel, Colors.orange),
+            SizedBox(height: 10),
+            _buildStatBar('Energy', energyLevel, Colors.blue),
           ],
         ),
       ),
