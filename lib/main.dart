@@ -19,6 +19,7 @@ class DigitalPetApp extends StatefulWidget {
 
 class DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "Your Pet";
+  int happinessLevel = 50;
   bool isEditingName = false;
   TextEditingController nameController = TextEditingController();
 
@@ -26,6 +27,24 @@ class DigitalPetAppState extends State<DigitalPetApp> {
   void dispose() {
     nameController.dispose();
     super.dispose();
+  }
+
+  Color _getPetColor() {
+    if (happinessLevel > 70) return Colors.green;
+    if (happinessLevel >= 30) return Colors.yellow;
+    return Colors.red;
+  }
+
+  String _getMoodText() {
+    if (happinessLevel > 70) return "Happy 😊";
+    if (happinessLevel >= 30) return "Neutral 😐";
+    return "Unhappy 😢";
+  }
+
+  String _getDogImage() {
+    if (happinessLevel > 70) return "assets/images/Happy.png";
+    if (happinessLevel >= 30) return "assets/images/Neutral.png";
+    return "assets/images/Sad.png";
   }
 
   void _toggleNameEdit() {
@@ -47,26 +66,60 @@ class DigitalPetAppState extends State<DigitalPetApp> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Digital Pet'),
-        backgroundColor: Colors.blue,
+        backgroundColor: _getPetColor(),
       ),
       body: Padding(
         padding: EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            // Pet Image Placeholder
+            // Pet Image with Mood
             Container(
               width: 180,
               height: 180,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.blue, width: 4),
-                color: Colors.grey[300],
+                border: Border.all(color: _getPetColor(), width: 4),
+                boxShadow: [
+                  BoxShadow(
+                    color: _getPetColor().withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 10,
+                    offset: Offset(0, 3),
+                  ),
+                ],
               ),
-              child: Icon(
-                Icons.pets,
-                size: 80,
-                color: Colors.grey[600],
+              child: ClipOval(
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      _getDogImage(),
+                      fit: BoxFit.cover,
+                      width: 180,
+                      height: 180,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          width: 180,
+                          height: 180,
+                          color: Colors.grey[300],
+                          child: Icon(
+                            Icons.pets,
+                            size: 80,
+                            color: _getPetColor(),
+                          ),
+                        );
+                      },
+                    ),
+                    Container(
+                      width: 180,
+                      height: 180,
+                      decoration: BoxDecoration(
+                        color: _getPetColor().withOpacity(0.3),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 20),
@@ -100,6 +153,12 @@ class DigitalPetAppState extends State<DigitalPetApp> {
                   ),
                 ],
               ],
+            ),
+
+            SizedBox(height: 16.0),
+            Text(
+              'Mood: ${_getMoodText()}',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
             ),
           ],
         ),
