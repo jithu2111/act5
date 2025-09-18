@@ -47,6 +47,21 @@ class DigitalPetAppState extends State<DigitalPetApp> {
     }
   }
 
+  void _playWithPet() {
+    setState(() {
+      happinessLevel = (happinessLevel + 10).clamp(0, 100);
+      energyLevel = (energyLevel + 15).clamp(0, 100);
+      _updateHunger();
+    });
+  }
+
+  void _feedPet() {
+    setState(() {
+      hungerLevel = (hungerLevel - 10).clamp(0, 100);
+      _updateHappiness();
+    });
+  }
+
   Color _getPetColor() {
     if (happinessLevel > 70) return Colors.green;
     if (happinessLevel >= 30) return Colors.yellow;
@@ -213,6 +228,32 @@ class DigitalPetAppState extends State<DigitalPetApp> {
             _buildStatBar('Hunger', hungerLevel, Colors.orange),
             SizedBox(height: 10),
             _buildStatBar('Energy', energyLevel, Colors.blue),
+
+            SizedBox(height: 20.0),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _playWithPet,
+                  icon: Icon(Icons.sports_esports),
+                  label: Text('Quick Play'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: _feedPet,
+                  icon: Icon(Icons.restaurant),
+                  label: Text('Feed'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
