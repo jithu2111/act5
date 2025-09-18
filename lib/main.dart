@@ -23,6 +23,7 @@ class DigitalPetAppState extends State<DigitalPetApp> {
   int hungerLevel = 50;
   int energyLevel = 50;
   bool isEditingName = false;
+  String selectedActivity = 'Play with Ball';
   TextEditingController nameController = TextEditingController();
 
   @override
@@ -59,6 +60,38 @@ class DigitalPetAppState extends State<DigitalPetApp> {
     setState(() {
       hungerLevel = (hungerLevel - 10).clamp(0, 100);
       _updateHappiness();
+    });
+  }
+
+  void _performActivity() {
+    setState(() {
+      switch (selectedActivity) {
+        case 'Play with Ball':
+          happinessLevel = (happinessLevel + 15).clamp(0, 100);
+          energyLevel = (energyLevel + 10).clamp(0, 100);
+          hungerLevel = (hungerLevel + 8).clamp(0, 100);
+          break;
+        case 'Go for Walk':
+          happinessLevel = (happinessLevel + 20).clamp(0, 100);
+          energyLevel = (energyLevel + 25).clamp(0, 100);
+          hungerLevel = (hungerLevel + 12).clamp(0, 100);
+          break;
+        case 'Take Nap':
+          energyLevel = (energyLevel + 30).clamp(0, 100);
+          happinessLevel = (happinessLevel + 5).clamp(0, 100);
+          hungerLevel = (hungerLevel + 5).clamp(0, 100);
+          break;
+        case 'Learn Tricks':
+          happinessLevel = (happinessLevel + 25).clamp(0, 100);
+          energyLevel = (energyLevel + 5).clamp(0, 100);
+          hungerLevel = (hungerLevel + 10).clamp(0, 100);
+          break;
+        case 'Grooming':
+          happinessLevel = (happinessLevel + 12).clamp(0, 100);
+          energyLevel = (energyLevel + 8).clamp(0, 100);
+          hungerLevel = (hungerLevel + 3).clamp(0, 100);
+          break;
+      }
     });
   }
 
@@ -228,6 +261,51 @@ class DigitalPetAppState extends State<DigitalPetApp> {
             _buildStatBar('Hunger', hungerLevel, Colors.orange),
             SizedBox(height: 10),
             _buildStatBar('Energy', energyLevel, Colors.blue),
+
+            SizedBox(height: 20.0),
+
+            Container(
+              padding: EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'Select Activity:',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 10),
+                  DropdownButton<String>(
+                    value: selectedActivity,
+                    isExpanded: true,
+                    items: [
+                      DropdownMenuItem(value: 'Play with Ball', child: Text('🏀 Play with Ball')),
+                      DropdownMenuItem(value: 'Go for Walk', child: Text('🚶 Go for Walk')),
+                      DropdownMenuItem(value: 'Take Nap', child: Text('😴 Take Nap')),
+                      DropdownMenuItem(value: 'Learn Tricks', child: Text('🎓 Learn Tricks')),
+                      DropdownMenuItem(value: 'Grooming', child: Text('✨ Grooming')),
+                    ],
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedActivity = newValue!;
+                      });
+                    },
+                  ),
+                  SizedBox(height: 15),
+                  ElevatedButton.icon(
+                    onPressed: _performActivity,
+                    icon: Icon(Icons.play_arrow),
+                    label: Text('Do Activity'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple,
+                      foregroundColor: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
             SizedBox(height: 20.0),
 
